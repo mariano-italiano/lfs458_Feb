@@ -1,0 +1,88 @@
+sudo -i
+apt-get update && apt-get upgrade -y
+apt install curl apt-transport-https vim git wget gnupg2 software-properties-common lsb-release ca-certificates uidmap -y
+swapoff -a
+modprobe overlay
+modprobe br_netfilter
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+cat << EOF | tee /etc/sysctl.d/kubernetes.conf
+dge.bridge-nf-call-ip6tables = 1
+dge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+EOF
+sysctl --system 
+mkdir -p /etc/apt/keyrings
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt-get update
+apt-get install containerd.io -y
+containerd config default | tee /etc/containerd/config.toml
+sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
+systemctl restart containerd.service 
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+apt-get update
+apt-get install -y kubectl kubeadm kubelet
+apt-mark hold kubelet kubeadm kubectl
+kubeadm init --control-plane-endpoint=master1
+exit
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+# worker nodes
+sudo kubeadm join master1:6443 --token jiejwc.9mu4hf8cz9uj2vxc --discovery-token-ca-cert-hash sha256:8b362c16b5c860639808aa0b9bc0d5f29e56499de785b03699bd43d18bbb5d23
+
+kubectl get nodes
+sudo apt-get install bash-completion -y
+vi .bashrc 
+kubectl get nodes
+kubectl describe node master
+kubectl describe node worker1
+kubectl describe node worker01
+kubectl get pods --all-namespaces
+kubectl get pods etcd-master -n kube-system\
+kubectl get pods etcd-master -n kube-system
+kubectl get pods etcd-master -n kube-system -o yaml
+kubectl get pods etcd-master -n kube-system -o wide
+kubectl get pods  -n kube-system -o wide
+kubectl create pod web1 --image=nginx
+kubectl create deployment web1 --image=nginx
+kubectl get pods
+kubectl get deploy
+vi simple-pod.yml
+kubectl apply -f simple-pod.yml 
+vi simple-pod.yml 
+kubectl apply -f simple-pod.yml 
+kubectl get pod
+kubectl get pod simple-pod -o yaml
+kubectl get pod simple-pod -o json
+kubectl get pod simple-pod -o yaml > second-pod.yml
+vi second-pod.yml 
+kubectl create -f second-pod.yml
+kubectl get pod
+kubectl delete pod second-pod
+kubectl get pod -o wide
+kubectl delete pod simple-pod
+kubectl delete deploy web1
+vi simple-dep.yml
+kubectl apply -f simple-dep.yml 
+kubectl get deploy
+kubectl get pod
+vi simple-dep.yml
+kubectl apply -f simple-dep.yml 
+kubectl get pod
+kubectl get deploy
+kubectl get deploy -o wide
+kubectl get pod -o wide
+kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null
+history
+history | awk '$1 > 15' | cut -c 8- 
+apt-get install -y git
+sudo apt-get install -y git
+history | awk '$1 > 15' | cut -c 8- > day1-history.txt
