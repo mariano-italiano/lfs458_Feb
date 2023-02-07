@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: second-pod
+spec:
+  containers:
+  - image: alpine
+    name: alpine 
