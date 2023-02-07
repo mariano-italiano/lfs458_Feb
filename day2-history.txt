@@ -1,0 +1,247 @@
+sudo vi /etc/kubernetes/manifests/etcd.yaml
+etcdctl get cluster.name --endpoints=https://192.168.1.100:2379 
+sudo etcdctl get cluster.name --endpoints=https://192.168.1.100:2379 
+sudo etcdctl get cluster.name --endpoints=https://192.168.1.100:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key 
+kubectl get pod -n kube-system 
+etcdctl snapshot save
+ETCDCTL_API=3 etcdctl snapshot save
+ETCDCTL_API=3 etcdctl snapshot save etcd_backup.db --endpoints=https://192.168.1.100:2379
+ETCDCTL_API=3 etcdctl get cluster.name --endpoints=https://192.168.1.100:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+sudo ETCDCTL_API=3 etcdctl get cluster.name --endpoints=https://192.168.1.100:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+ETCDCTL_API=3 sudo etcdctl get cluster.name --endpoints=https://192.168.1.100:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+etcdctl get cluster.name --endpoints=https://192.168.1.100:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+ETCDCTL_API=3 etcdctl get cluster.name --endpoints=https://192.168.1.100:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+sudo -i
+kubectl get pod -n kube-system 
+kubectl -n kube-system exec -it etcd-master -- sh
+kubectl -n kube-system exec -it etcd-cp -- sh -c "ETCDCTL_API=3 \
+_CACERT=/etc/kubernetes/pki/etcd/ca.crt \
+_CERT=/etc/kubernetes/pki/etcd/server.crt \
+_KEY=/etc/kubernetes/pki/etcd/server.key \
+ --endpoints=https://127.0.0.1:2379 member list"
+kubectl -n kube-system exec -it etcd-master -- sh -c "ETCDCTL_API=3 \
+_CACERT=/etc/kubernetes/pki/etcd/ca.crt \
+_CERT=/etc/kubernetes/pki/etcd/server.crt \
+_KEY=/etc/kubernetes/pki/etcd/server.key \
+ --endpoints=https://127.0.0.1:2379 member list"
+kubectl -n kube-system exec -it etcd-master -- sh -c "ETCDCTL_API=3 \
+_CACERT=/etc/kubernetes/pki/etcd/ca.crt \
+_CERT=/etc/kubernetes/pki/etcd/server.crt \
+_KEY=/etc/kubernetes/pki/etcd/server.key \
+ --endpoints=https://127.0.0.1:2379 member list -w table"
+kubectl -n kube-system exec -it etcd-master -- sh -c "ETCDCTL_API=3 \
+_CACERT=/etc/kubernetes/pki/etcd/ca.crt \
+_CERT=/etc/kubernetes/pki/etcd/server.crt \
+_KEY=/etc/kubernetes/pki/etcd/server.key \
+ --endpoints=https://127.0.0.1:2379 member list -w table"
+vi /etc/kubernetes/manifests/etcd.yaml 
+sudo vi /etc/kubernetes/manifests/etcd.yaml
+ls -la
+rm etcd_backup.db.part
+cd
+kubectl get pod
+kubectl get deploy
+kubectl get deploy -o 
+kubectl get pod -o wide
+sudo apt-get update
+kubeadm version
+sudo apt-get install -y --allow-change-held-packages kubeadm=1.25.1-00
+kubeadm version
+kubectl get nodes
+kubectl drain master 
+kubectl drain master --ignore-daemonsets
+kubectl get nodes -o wide
+kubectl get nodes
+sudo kubeadm upgrade plan v1.25.1 
+sudo kubeadm upgrade apply v1.25.1 
+sudo apt-get install -y --allow-change-held-packages kubectl=1.25.1-00 kubelet=1.25.1-00 
+sudo systemctl daemon-reload 
+sudo systemctl restart kubelet.service 
+kubectl get nodes
+kubectl uncordon master 
+kubectl get nodes
+kubectl drain worker01 --ignore-daemonsets
+kubectl get nodes
+kubectl uncordon worker01
+kubectl get nodes
+kubectl drain worker02 --ignore-daemonsets
+kubectl get nodes
+kubectl uncordon worker02
+kubectl get pods -o wide
+vi descheduler.yml
+kubectl apply -f descheduler.yml 
+vi descheduler.yml
+kubectl apply -f descheduler.yml 
+kubectl get deploy
+kubectl scale deployment nginx-deployment --replicas=0 
+kubectl scale deployment nginx-deployment --replicas=3
+kubectl get pods -o wide
+grep client-cert .kube/config 
+grep client-cert .kube/config | cut -d " " -f 6
+export client=$(grep client-cert .kube/config | cut -d " " -f 6)
+grep client-key-data .kube/config | cut -d " " -f 6
+export key $(grep client-key-data .kube/config | cut -d " " -f 6)
+vi .kube/config 
+export key=$(grep client-key-data .kube/config | cut -d " " -f 6)
+export auth=$(grep certificate-authority-data .kube/config | cut -d " " -f 6)
+echo $client | base64 -d > client.pem
+vi client.pem
+echo $key | base64 -d >  client-key.pem
+echo $autj | base64 -d > ca.pem
+vi ca.pem
+echo $auth | base64 -d > ca.pem
+vi ca.pem
+vi client-key.pem 
+ls -la
+ls -la *.pem
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://master:6443/api/v1/pods
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://master:6443/api/v1/pods | python3 -m json.tool
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://master:6443/api/v1/pods > allPods.json
+vi allPods.json
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://master:6443/api/v1/namespaces/default/pods/nginx-deployment-7c5798b9c6-4pr9p
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://master:6443/api/v1/namespaces/default/pods/nginx-deployment-7c5798b9c6-4pr9p 
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://master:6443/api/v1/namespaces/default/pods/nginx-deployment-7c5798b9c6-4pr9p | jq -r '.metadata.labels'
+sudo apt  install jq
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://master:6443/api/v1/namespaces/default/pods/nginx-deployment-7c5798b9c6-4pr9p | jq -r '.metadata.labels'
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://master:6443/api/v1/namespaces/default/pods/nginx-deployment-7c5798b9c6-4pr9p | jq -r '.metadata.creationTimestamp'
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://master:6443/api/v1/namespaces/default/pods/nginx-deployment-7c5798b9c6-4pr9p/logs
+kubectl get nodes
+kubectl get nodes --v=5
+kubectl get nodes --v=7
+kubectl get nodes --v=10
+curl --cert client.pem --key client-key.pem --cacert ca.pem https://192.168.1.100:6443/api/v1/nodes?limit=500
+kubectl create ns test --v=7
+kubectl create ns test2 --v=10
+kubectl get nodes 
+kubectl get pods
+kubectl delete deployments nginx-deployment 
+vi my-pod.yml
+kubectl create -f my-pod.yml 
+kubectl get po
+vi my-pod.yml
+kubectl describe pod my-pod 
+kubectl exec my-pod -c busybox -- echo "Hello from busybox $hostname"
+kubectl exec my-pod -it -- sh
+kubectl exec my-pod -c busybox -- apt-get update
+kubectl exec my-pod -c busybox -- ls
+kubectl create deployment my-deployment
+kubectl create deployment my-deployment --image=nginx
+kubectl get deployments.apps my-deployment -o yaml > my-deployment.yml
+vi my-deployment.yml
+kubectl delete deployments.apps my-deployment 
+kubectl apply -f my-deployment.yml 
+kubectl get deployments.apps my-deployment -o yaml
+kubectl get pod
+kubectl annotate pod --all description='Prod Pods'
+kubectl annotate deployments.apps my-deployment environment='dev'
+kubectl edit pod my-pod 
+kubectl edit pod my-deployment-67b5d4bf57-dn6lt 
+kubectl edit deployments.apps  my-deployment 
+kubectl annotate pod my-deployment-67b5d4bf57-dn6lt description-
+kubectl edit pod my-deployment-67b5d4bf57-dn6lt 
+kubectl edit pod my-pod 
+kubectl annotate --overwrite pod my-pod description='Dev Pods'
+kubectl edit pod my-pod 
+kubectl annotate pod my-pod description='Prod Pods'
+kubectl get endpoints
+cat .kube/config | grep -i server
+vi my-pod.yml 
+kubectl label pod my-pod env=dev
+kubectl edit pod my-pod 
+kubectl get pod my-pod --show-labels 
+kubectl get pod my-pod -l env=dev
+kubectl get pod -l env=dev
+cp my-pod.yml my-pod2.yml 
+vi my-pod2.yml
+kubectl apply -f my-pod2.yml
+kubectl get pod -l app=test-pod
+kubectl edit pod my-pod2
+kubectl get pod -l app=test-pod
+vi my-deployment.yml 
+history
+history | awk '$1 > 108' | cut -c 8- > day2-history.txt
+vi pod-reader-role.yml
+kubectl apply -f pod-reader-role.yml 
+kubectl create ns beebox-mobile
+kubectl apply -f pod-reader-role.yml 
+vi pod-reader-rolebinding.yml
+kubectl apply -f pod-reader-rolebinding.yml
+kubectl get pods -n beebox-mobile 
+kubectl -n beebox-mobile create deployment --image=nginx
+kubectl -n beebox-mobile create deployment test --image=nginx
+vi .kube/config 
+useradd devuser
+sudo -i 
+vi .kube/config 
+sudo -i
+kubectl get rolebindings.rbac.authorization.k8s.io 
+kubectl get rolebindings.rbac.authorization.k8s.io -n beebox-mobile 
+kubectl delete rolebindings.rbac.authorization.k8s.io -n beebox-mobile pod-reader 
+vi pod-reader-rolebinding.yml 
+kubectl apply -f pod-reader-rolebinding.yml 
+sudo -i
+kubectl -n beebox-mobile get deploy
+sudo -i
+kubectl get deployments.apps 
+kubectl edit deployments.apps my-deployment 
+kubectl get deployments.apps 
+kubectl scale deployment my-deployment --replicas=4
+kubectl get deployments.apps 
+kubectl edit deployments.apps my-deployment 
+kubectl delete deployments.apps my-deployment 
+vi my-deployment.yml 
+kubectl apply -f my-deployment.yml
+kubectl get deployments.apps 
+kubectl edit deployments.apps my-deployment 
+kubectl get pod
+kubectl set image deployment my-deployment nginx=nginx:broken --record
+kubectl get pod
+kubectl rollout status deployment my-deployment 
+kubectl rollout history deployment my-deployment 
+kubectl rollout undo deployment my-deployment --to-revision=2
+kubectl get pod
+kubectl set image deployment my-deployment nginx=nginx:1.19.2 --record
+kubectl rollout history deployment my-deployment 
+kubectl get pod
+kubectl describe deployments.apps my-deployment 
+vi my-deamonset.yml
+kubectl get daemonsets.apps 
+kubectl apply -f my-deamonset.yml
+kubectl get daemonsets.apps 
+kubectl get daemonsets.apps -o wide
+kubectl get pods -o wide
+cp my-pod.yml init-pod.yml
+vi init-pod.yml
+kubectl apply -f init-pod.yml
+vi init-pod.yml
+kubectl apply -f init-pod.yml
+kubectl get pod
+cp init-pod.yml multi-pod.yml
+vi multi-pod.yml
+kubectl create -f multi-pod.yml
+kubectl exec multi-pod -c buxybox -- it
+kubectl exec multi-pod -c buxybox1 -- it
+kubectl exec multi-pod -c busybox1 -- it
+kubectl get pods
+kubectl exec multi-pod -c busybox1 -it -- sh
+kubectl exec multi-pod -c busybox2 -it -- sh
+ls -la
+cd lfs458_Feb/
+ls -la
+cp -rp ../*.yml .
+ls -la
+rm descheduler.yml 
+git status
+git add .
+git commit -m "Adding yaml files day1 and day2"
+git push
+git pull
+git push
+git config pull.rebase false
+git push
+git pull
+git push
+cd ..
+vi day2-history.txt 
+history
+history | awk '$1 > 108' | cut -c 8- > lfs458_Feb/day2-history.txt
